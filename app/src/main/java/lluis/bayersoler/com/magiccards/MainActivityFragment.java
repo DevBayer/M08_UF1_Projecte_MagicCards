@@ -24,9 +24,6 @@ import app.api.Card;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-
-    private JSONObject data;
-    private ArrayAdapter<String> adapter;
     private ArrayList<Card> cards;
 
     public MainActivityFragment() {
@@ -44,10 +41,7 @@ public class MainActivityFragment extends Fragment {
 
         ListView CardList = (ListView) fragment.findViewById(R.id.CardList);
 
-
         CardsAdapter adapter = new CardsAdapter(getContext(), cards);
-
-        Log.d("test", cards.toString());
 
         CardList.setAdapter(adapter);
 
