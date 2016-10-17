@@ -3,15 +3,13 @@ package app;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import app.api.Card;
 
@@ -21,20 +19,17 @@ import app.api.Card;
 
 public class InitialData {
 
-    Context app;
     JSONObject json;
-    private String jsonString;
+    private String jsonString = "";
 
 
     public InitialData(InputStreamReader file){
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(app.getAssets().open( "initial_data.json" )));
-            StringBuilder total = new StringBuilder();
+            BufferedReader r = new BufferedReader(file);
             String line;
             while ((line = r.readLine()) != null) {
-                total.append(line);
+                jsonString += line;
             }
-            this.jsonString = line;
             this.json = new JSONObject(jsonString);
         } catch(final Throwable tx) {
             Log.e("InitialData::loadFile()", tx.toString());
@@ -42,23 +37,23 @@ public class InitialData {
     }
 
 
-    public ArrayList<String> getCards(){
-        ArrayList<String> test = new ArrayList<>();
+    public ArrayList<Card> getCards(){
+        ArrayList<Card> test = new ArrayList<>();
         if(json != null) {
             try {
-                Iterator<?> keys = json.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    if (json.get(key) instanceof JSONObject) {
-                        JSONObject xx = new JSONObject(json.get(key).toString());
-                        Log.d("res1", xx.getString("something"));
-                        Log.d("res2", xx.getString("something2"));
-                        test.add( xx.getString("name") );
-                    }
+                JSONArray cards = json.getJSONArray("cards");
+                for (int i = 0; i <  cards.length(); i++) {
+                    test.add(new Card(cards.getJSONObject(i)));
                 }
+
+                Log.d("getCards() debugging", ""+test.size());
                 return test;
             } catch (JSONException e) {
-                Log.e("InitialData::getCards()", e.getMessage());
+                Log.e("InitialData::getCards", e.toString());
+            } catch (NoSuchFieldException e) {
+                Log.e("InitialData::getCards", e.toString());
+            } catch (IllegalAccessException e) {
+                Log.e("InitialData::getCards", e.toString());
             }
         }
         return new ArrayList<>();

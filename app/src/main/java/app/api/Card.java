@@ -1,7 +1,12 @@
 package app.api;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -10,12 +15,12 @@ import java.util.ArrayList;
 
 public class Card {
     private String name;
-    private ArrayList<String> names;
+    private JSONArray names;
     private String manaCost;
     private int cmc;
-    private ArrayList<String> colors;
+    private JSONArray colors;
     private String type;
-    private ArrayList<String> subtypes;
+    private JSONArray subtypes;
     private String rarity;
     private String set;
     private String text;
@@ -26,15 +31,15 @@ public class Card {
     private String layout;
     private float multiverseid;
     private String imageUrl;
-    private JSONObject rulings;
-    private JSONObject foreignNames;
-    private ArrayList<String> printings;
+    private JSONArray rulings;
+    private JSONArray foreignNames;
+    private JSONArray printings;
     private String originalText;
     private String originalType;
     private String id;
 
 
-    public Card(String name, ArrayList<String> names, String manaCost, int cmc, ArrayList<String> colors, String type, ArrayList<String> subtypes, String rarity, String set, String text, String artist, String number, int power, int toughness, String layout, float multiverseid, String imageUrl, JSONObject rulings, JSONObject foreignNames, ArrayList<String> printings, String originalText, String originalType, String id) {
+    public Card(String name, JSONArray names, String manaCost, int cmc, JSONArray colors, String type, JSONArray subtypes, String rarity, String set, String text, String artist, String number, int power, int toughness, String layout, float multiverseid, String imageUrl, JSONArray rulings, JSONArray foreignNames, JSONArray printings, String originalText, String originalType, String id) {
         this.name = name;
         this.names = names;
         this.manaCost = manaCost;
@@ -60,6 +65,59 @@ public class Card {
         this.id = id;
     }
 
+    public Card(JSONObject jsonObject) throws JSONException, NoSuchFieldException, IllegalAccessException {
+
+        /**
+         * Manera dinámica,
+         * Observació: podría ser millor crear un String[] amb el nom dels atributs,
+         * (o si tenim algún atribut que no surt al JSON, fer un filtre per als que començin amb "_")
+         */
+        for (Field a: Card.class.getDeclaredFields()) {
+            if(jsonObject.has(a.getName())){
+                if(a.getType().equals(String.class)){
+                    a.set(this, jsonObject.getString(a.getName()));
+                }else if(a.getType().equals(Integer.class)){
+                    a.set(this, Integer.parseInt(jsonObject.getString(a.getName())));
+                }else if(a.getType().equals(JSONArray.class)){
+                    a.set(this, jsonObject.getJSONArray(a.getName()));
+                }else if(a.getType().equals(Float.class)){
+                    a.set(this, Float.parseFloat(jsonObject.getString(a.getName())));
+                }
+            }
+        }
+
+        /**
+         * Manera "estática"(antiga)
+        this.name = jsonObject.getString("name");
+        this.names = jsonObject.optJSONArray("names");
+        this.manaCost = jsonObject.getString("manaCost");
+        this.cmc = Integer.parseInt(jsonObject.getString("cmc"));
+        this.colors = jsonObject.optJSONArray("colors");
+        this.type = jsonObject.getString("type");
+        this.subtypes = jsonObject.optJSONArray("subtypes");
+        this.rarity = jsonObject.getString("rarity");
+        this.set = jsonObject.getString("set");
+        this.text = jsonObject.getString("text");
+        this.artist = jsonObject.getString("artist");
+        if(jsonObject.has("number")){
+            this.number = jsonObject.getString("number");
+        }
+        if(jsonObject.has("power")) {
+            this.power = Integer.parseInt(jsonObject.getString("power"));
+        }
+        this.toughness = Integer.parseInt(jsonObject.getString("toughness"));
+        this.layout = jsonObject.getString("layout");
+        this.multiverseid = Float.parseFloat(jsonObject.getString("multiverseid"));
+        this.imageUrl = jsonObject.getString("imageUrl");
+        this.rulings = jsonObject.optJSONArray("rulings");
+        this.foreignNames = jsonObject.optJSONArray("foreignNames");
+        this.printings = jsonObject.optJSONArray("printings");
+        this.originalText = jsonObject.getString("originalText");
+        this.originalType = jsonObject.getString("originalType");
+        this.id = jsonObject.getString("id");
+         */
+    }
+
     public String getName() {
         return name;
     }
@@ -68,11 +126,11 @@ public class Card {
         this.name = name;
     }
 
-    public ArrayList<String> getNames() {
+    public JSONArray getNames() {
         return names;
     }
 
-    public void setNames(ArrayList<String> names) {
+    public void setNames(JSONArray names) {
         this.names = names;
     }
 
@@ -92,11 +150,11 @@ public class Card {
         this.cmc = cmc;
     }
 
-    public ArrayList<String> getColors() {
+    public JSONArray getColors() {
         return colors;
     }
 
-    public void setColors(ArrayList<String> colors) {
+    public void setColors(JSONArray colors) {
         this.colors = colors;
     }
 
@@ -108,11 +166,11 @@ public class Card {
         this.type = type;
     }
 
-    public ArrayList<String> getSubtypes() {
+    public JSONArray getSubtypes() {
         return subtypes;
     }
 
-    public void setSubtypes(ArrayList<String> subtypes) {
+    public void setSubtypes(JSONArray subtypes) {
         this.subtypes = subtypes;
     }
 
@@ -196,27 +254,27 @@ public class Card {
         this.imageUrl = imageUrl;
     }
 
-    public JSONObject getRulings() {
+    public JSONArray getRulings() {
         return rulings;
     }
 
-    public void setRulings(JSONObject rulings) {
+    public void setRulings(JSONArray rulings) {
         this.rulings = rulings;
     }
 
-    public JSONObject getForeignNames() {
+    public JSONArray getForeignNames() {
         return foreignNames;
     }
 
-    public void setForeignNames(JSONObject foreignNames) {
+    public void setForeignNames(JSONArray foreignNames) {
         this.foreignNames = foreignNames;
     }
 
-    public ArrayList<String> getPrintings() {
+    public JSONArray getPrintings() {
         return printings;
     }
 
-    public void setPrintings(ArrayList<String> printings) {
+    public void setPrintings(JSONArray printings) {
         this.printings = printings;
     }
 

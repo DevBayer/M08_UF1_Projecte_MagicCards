@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import app.InitialData;
+import app.adapters.CardsAdapter;
 import app.api.Card;
 
 /**
@@ -26,12 +27,10 @@ public class MainActivityFragment extends Fragment {
 
     private JSONObject data;
     private ArrayAdapter<String> adapter;
-    private ArrayList<String> cards;
+    private ArrayList<Card> cards;
 
     public MainActivityFragment() {
-        InputStreamReader file = new InputStreamReader(getResources().openRawResource(R.raw.initial_json));
-        InitialData iData = new InitialData(file);
-        cards = iData.getCards();
+
     }
 
     @Override
@@ -39,13 +38,14 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_main, container, false);
 
+        InputStreamReader file = new InputStreamReader(getResources().openRawResource(R.raw.initial_json));
+        InitialData iData = new InitialData(file);
+        cards = iData.getCards();
+
         ListView CardList = (ListView) fragment.findViewById(R.id.CardList);
-        adapter = new ArrayAdapter<>(
-                getContext(),
-                R.layout.cardlist_row,
-                R.id.CardList,
-                cards
-        );
+
+
+        CardsAdapter adapter = new CardsAdapter(getContext(), cards);
 
         Log.d("test", cards.toString());
 
