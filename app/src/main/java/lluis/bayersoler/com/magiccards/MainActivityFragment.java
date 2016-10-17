@@ -1,9 +1,11 @@
 package lluis.bayersoler.com.magiccards;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import app.InitialData;
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
 import app.api.Card;
+import app.exceptions.ApiControllerException;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -87,13 +90,16 @@ public class MainActivityFragment extends Fragment {
 
 
     private class RefreshDataTask extends AsyncTask<Void, Void, ArrayList<Card>> {
+        private Exception exception;
         @Override
         protected ArrayList<Card> doInBackground(Void... voids) {
 
-            ArrayList<Card> result;
-                result = ApiController.GetAllCards(1, 25);
-
-            //Log.d("DEBUG", result != null ? result.toString() : null);
+            ArrayList<Card> result = null;
+            try {
+                return result = ApiController.GetAllCards(1, 25);
+            }catch(ApiControllerException e){
+                this.exception = e;
+            }
 
             return result;
         }
@@ -101,10 +107,15 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Card> cards) {
             adapter.clear();
-            if(cards != null){
+            if(cards != null && exception == null){
                 for (Card card : cards) {
                     adapter.add(card);
                 }
+            }else if(exception != null){
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle("Error con la petición");
+                dialogo1.setMessage(this.exception.getMessage());
+                dialogo1.show();
             }
         }
     }

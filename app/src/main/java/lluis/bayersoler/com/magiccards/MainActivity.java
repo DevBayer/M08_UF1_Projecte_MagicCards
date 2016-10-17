@@ -13,6 +13,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private static Context context;
+    public static boolean debug = false;
 
 
     @Override

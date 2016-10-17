@@ -24,7 +24,7 @@ public class ApiController {
     private static final String BASE_URL = "https://api.magicthegathering.io/v1";
 
     @Nullable
-    public static ArrayList<Card> GetAllCards(int page, int pageSize){
+    public static ArrayList<Card> GetAllCards(int page, int pageSize) throws ApiControllerException{
         Uri builturi = Uri.parse(BASE_URL)
                 .buildUpon()
                 .appendPath("cards")
@@ -38,11 +38,10 @@ public class ApiController {
         }
 
         return null;
-
     }
 
     @Nullable
-    private static JSONObject doCall(String url) {
+    private static JSONObject doCall(String url) throws ApiControllerException {
         try {
             String JsonResponse = HttpUtils.get(url);
             JSONObject json = new JSONObject(JsonResponse);
@@ -50,8 +49,6 @@ public class ApiController {
                 throw new ApiControllerException(json.getString("status"),json.getString("message"));
             }
             return json;
-        }catch (ApiControllerException e){
-            Log.e("ApiControllerException", e.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {

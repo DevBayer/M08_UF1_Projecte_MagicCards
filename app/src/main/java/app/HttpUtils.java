@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import app.exceptions.ApiControllerException;
 
@@ -22,8 +23,10 @@ public class HttpUtils {
         try {
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             response = readStream(in);
-        }catch(FileNotFoundException e){
-            throw new ApiControllerException("404", e.toString());
+        }catch(FileNotFoundException e) {
+            throw new ApiControllerException("404", e.getMessage());
+        }catch(UnknownHostException e) {
+            throw new ApiControllerException("Unable to resolve host", e.getMessage());
         } finally {
             urlConnection.disconnect();
         }
