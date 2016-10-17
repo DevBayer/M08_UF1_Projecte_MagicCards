@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class ApiController {
     private static final String BASE_URL = "https://api.magicthegathering.io/v1";
 
     @Nullable
-    public static ArrayList<Card> GetAllCards(int page, int pageSize) throws ApiControllerException{
+    public static ArrayList<Card> GetAllCards(int page, int pageSize) throws ApiControllerException {
         Uri builturi = Uri.parse(BASE_URL)
                 .buildUpon()
                 .appendPath("cards")

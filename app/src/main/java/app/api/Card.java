@@ -1,13 +1,17 @@
 package app.api;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by 23878410v on 14/10/16.
@@ -75,13 +79,19 @@ public class Card {
         for (Field a: Card.class.getDeclaredFields()) {
             if(jsonObject.has(a.getName())){
                 if(a.getType().equals(String.class)){
+                    Log.d("Card::String", a.getName());
                     a.set(this, jsonObject.getString(a.getName()));
                 }else if(a.getType().equals(Integer.class)){
+                    Log.d("Card::Integer", a.getName());
                     a.set(this, Integer.parseInt(jsonObject.getString(a.getName())));
                 }else if(a.getType().equals(JSONArray.class)){
-                    a.set(this, jsonObject.getJSONArray(a.getName()));
+                    Log.d("Card::JSONArray", a.getName());
+                    a.set(this, jsonObject.get(a.getName()));
                 }else if(a.getType().equals(Float.class)){
+                    Log.d("Card::Float", a.getName());
                     a.set(this, Float.parseFloat(jsonObject.getString(a.getName())));
+                }else{
+                    Log.d("no parsed:", a.getName());
                 }
             }
         }
@@ -300,5 +310,11 @@ public class Card {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Bitmap getImageBitmap() throws MalformedURLException, IOException {
+        URL url = new URL(this.imageUrl);
+        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        return bmp;
     }
 }

@@ -1,12 +1,10 @@
 package lluis.bayersoler.com.magiccards;
 
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 import app.InitialData;
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
