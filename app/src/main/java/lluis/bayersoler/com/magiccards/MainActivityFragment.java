@@ -4,14 +4,19 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -28,9 +33,13 @@ public class MainActivityFragment extends Fragment {
     private ArrayList<Card> cards;
     private ListView CardList;
     private CardsAdapter adapter;
+    private int page;
+    private int pageSize;
+    private boolean sync_loadmore = false;
 
     public MainActivityFragment() {
-
+        this.page = 1;
+        this.pageSize = 10;
     }
 
 
@@ -51,17 +60,38 @@ public class MainActivityFragment extends Fragment {
 
         CardList = (ListView) fragment.findViewById(R.id.CardList);
 
+
+        CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+                {
+                    if(sync_loadmore == false)
+                    {
+                        sync_loadmore = true;
+                        loadNextPage();
+                    }
+                }
+
+            }
+        });
+
         adapter = new CardsAdapter(getContext(), cards);
 
         CardList.setAdapter(adapter);
-
         return fragment;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.fragment_main_menu, menu);
     }
 
     @Override
@@ -86,7 +116,11 @@ public class MainActivityFragment extends Fragment {
         task.execute();
     }
 
-
+    private void loadNextPage() {
+        page = page+1;
+        LoadMoreTask task = new LoadMoreTask(page, pageSize);
+        task.execute();
+    }
 
     private class RefreshDataTask extends AsyncTask<Void, Void, ArrayList<Card>> {
         private Exception exception;
@@ -110,6 +144,45 @@ public class MainActivityFragment extends Fragment {
                 for (Card card : cards) {
                     adapter.add(card);
                 }
+            }else if(exception != null){
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle("Error con la petición");
+                dialogo1.setMessage(this.exception.getMessage());
+                dialogo1.show();
+            }
+        }
+    }
+
+    private class LoadMoreTask extends AsyncTask<Void, Void, ArrayList<Card>> {
+        private Exception exception;
+        private int page;
+        private int pageSize;
+
+        public LoadMoreTask(int page, int pageSize) {
+            this.page = page;
+            this.pageSize = pageSize;
+        }
+
+        @Override
+        protected ArrayList<Card> doInBackground(Void... voids) {
+
+            ArrayList<Card> result = null;
+            try {
+                return result = ApiController.GetAllCards(page, pageSize);
+            }catch(ApiControllerException e){
+                this.exception = e;
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Card> cards) {
+            if(cards != null && exception == null){
+                for (Card card : cards) {
+                    adapter.add(card);
+                }
+                sync_loadmore = false;
             }else if(exception != null){
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle("Error con la petición");
