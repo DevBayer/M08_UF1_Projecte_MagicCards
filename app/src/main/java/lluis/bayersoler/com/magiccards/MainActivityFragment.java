@@ -141,9 +141,7 @@ public class MainActivityFragment extends Fragment {
         protected void onPostExecute(ArrayList<Card> cards) {
             adapter.clear();
             if(cards != null && exception == null){
-                for (Card card : cards) {
-                    adapter.add(card);
-                }
+                adapter.addAll(cards);
             }else if(exception != null){
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle("Error con la petición");
@@ -179,9 +177,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Card> cards) {
             if(cards != null && exception == null){
-                for (Card card : cards) {
-                    adapter.add(card);
-                }
+                adapter.addAll(cards);
                 sync_loadmore = false;
             }else if(exception != null){
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
