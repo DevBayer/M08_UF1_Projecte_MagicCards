@@ -4,9 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -112,6 +109,7 @@ public class MainActivityFragment extends Fragment {
 
 
     private void refresh() {
+        page = 1;
         RefreshDataTask task = new RefreshDataTask();
         task.execute();
     }
@@ -129,7 +127,7 @@ public class MainActivityFragment extends Fragment {
 
             ArrayList<Card> result = null;
             try {
-                return result = ApiController.GetAllCards(1, 25);
+                return result = ApiController.GetAllCards(1, 100);
             }catch(ApiControllerException e){
                 this.exception = e;
             }
