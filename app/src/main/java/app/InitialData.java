@@ -2,23 +2,19 @@ package app;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import app.api.Card;
+import java.util.List;
+import app.models.Card;
+import app.models.Cards;
 
 /**
  * Created by Lluís Bayer Soler on 14/10/16.
  */
 
 public class InitialData {
-
-    JSONObject json;
     private String jsonString = "";
 
 
@@ -29,33 +25,16 @@ public class InitialData {
             while ((line = r.readLine()) != null) {
                 jsonString += line;
             }
-            this.json = new JSONObject(jsonString);
         } catch(final Throwable tx) {
             Log.e("InitialData::loadFile()", tx.toString());
         }
     }
 
 
-    public ArrayList<Card> getCards(){
-        ArrayList<Card> test = new ArrayList<>();
-        if(json != null) {
-            try {
-                JSONArray cards = json.getJSONArray("cards");
-                for (int i = 0; i <  cards.length(); i++) {
-                    test.add(new Card(cards.getJSONObject(i)));
-                }
-
-                Log.d("getCards() debugging", ""+test.size());
-                return test;
-            } catch (JSONException e) {
-                Log.e("InitialData::getCards", e.toString());
-            } catch (NoSuchFieldException e) {
-                Log.e("InitialData::getCards", e.toString());
-            } catch (IllegalAccessException e) {
-                Log.e("InitialData::getCards", e.toString());
-            }
-        }
-        return new ArrayList<>();
+    public List<Card> getCards(){
+        Gson gson = new Gson();
+        Cards response = gson.fromJson(jsonString, Cards.class);
+        return response.getCards();
     }
 
 }

@@ -1,11 +1,6 @@
 package app.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.NetworkOnMainThreadException;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,27 +10,21 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
+import java.util.List;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import app.api.ApiController;
-import app.api.Card;
-import app.exceptions.ApiControllerException;
+import app.models.Card;
 import lluis.bayersoler.com.magiccards.R;
 
 public class CardsAdapter extends ArrayAdapter<Card> {
 
-    private ImageView cardImage;
-
-    public CardsAdapter(Context context, ArrayList<Card> cards) {
-        super(context, 0, cards);
+    public CardsAdapter(Context context, List<Card> objects) {
+        super(context, 0, objects);
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Obtenim el objecte Card (segons la posició en la que es troba)
+        // Obtenim el objecte Cards (segons la posició en la que es troba)
         Card card = getItem(position);
 
         // Comprovem que la View no estigui reutilitzada, i la inflem
@@ -52,7 +41,7 @@ public class CardsAdapter extends ArrayAdapter<Card> {
         cardType.setText(card.getType());
 
         // Carreguem la vista cardImage que es el ImageView i utilitzem Glide
-        cardImage = (ImageView) convertView.findViewById(R.id.cardImage);
+        ImageView cardImage = (ImageView) convertView.findViewById(R.id.cardImage);
         Glide.with(getContext()).load(card.getImageUrl()).crossFade().into(cardImage);
 
         TextView manaCost = (TextView) convertView.findViewById(R.id.txtManaCost);
