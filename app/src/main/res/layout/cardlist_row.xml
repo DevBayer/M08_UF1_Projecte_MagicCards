@@ -5,60 +5,109 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite">
+    android:background="@color/colorLightDark">
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:id="@+id/guideline"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="96dp" />
+
+    <ImageView
+        android:layout_width="96dp"
+        app:srcCompat="@drawable/card"
+        android:id="@+id/cardImage"
+        android:padding="5dp"
+        android:background="@color/colorPrimaryDark"
+        android:adjustViewBounds="false"
+        android:layout_height="100dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:text="TextView"
         android:layout_width="0dp"
         android:id="@+id/cardName"
-        android:layout_height="42dp"
         android:paddingLeft="15dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         android:textStyle="bold"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:textSize="18sp"
         android:gravity="bottom"
         android:textColor="@color/colorPrimaryDark"
         android:background="@color/colorLightDark"
         android:ellipsize="end"
-        android:singleLine="true" />
-
-    <android.support.constraint.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="511dp"
-        android:id="@+id/guideline"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="77dp" />
-
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="84dp"
-        app:srcCompat="@drawable/card"
-        android:id="@+id/cardImage"
+        android:singleLine="true"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:padding="5dp"
-        android:background="@color/colorPrimaryDark"
-        android:adjustViewBounds="false" />
+        android:layout_height="50dp" />
 
     <TextView
         android:text="TextView"
         android:layout_width="0dp"
-        android:layout_height="42dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardName"
         android:id="@+id/cardType"
         android:gravity="top"
         android:paddingLeft="15dp"
         android:background="@color/colorLightDark"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@+id/cardName"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/colorGrayDark"
+        android:layout_width="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardType"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="50 Mana Cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtManaCost"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            tools:layout_editor_absoluteY="199dp"
+            tools:layout_editor_absoluteX="197dp"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:layout_weight=".33" />
+
+        <TextView
+            android:text="50 Toughness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtToughness"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintVertical_bias="0.8"
+            tools:layout_editor_absoluteY="155dp"
+            tools:layout_editor_absoluteX="293dp"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:layout_weight=".33" />
+
+        <TextView
+            android:text="50 Power"
+            android:id="@+id/txtPower"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark1"
+            tools:layout_editor_absoluteY="205dp"
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="30dp"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:layout_weight=".33" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

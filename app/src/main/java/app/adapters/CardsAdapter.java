@@ -55,6 +55,16 @@ public class CardsAdapter extends ArrayAdapter<Card> {
         cardImage = (ImageView) convertView.findViewById(R.id.cardImage);
         Glide.with(getContext()).load(card.getImageUrl()).crossFade().into(cardImage);
 
+        TextView manaCost = (TextView) convertView.findViewById(R.id.txtManaCost);
+        manaCost.setText(card.getCmc()+" Mana Cost");
+
+        TextView Power = (TextView) convertView.findViewById(R.id.txtPower);
+        Power.setText(card.getPower()+" Power");
+
+        TextView Toughness = (TextView) convertView.findViewById(R.id.txtToughness);
+        Toughness.setText(card.getToughness()+" Toughness");
+
+
         return convertView;
     }
 }

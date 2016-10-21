@@ -30,8 +30,8 @@ public class Card {
     private String text;
     private String artist;
     private String number;
-    private int power;
-    private int toughness;
+    private String power;
+    private String toughness;
     private String layout;
     private float multiverseid;
     private String imageUrl;
@@ -43,7 +43,7 @@ public class Card {
     private String id;
 
 
-    public Card(String name, JSONArray names, String manaCost, int cmc, JSONArray colors, String type, JSONArray subtypes, String rarity, String set, String text, String artist, String number, int power, int toughness, String layout, float multiverseid, String imageUrl, JSONArray rulings, JSONArray foreignNames, JSONArray printings, String originalText, String originalType, String id) {
+    public Card(String name, JSONArray names, String manaCost, int cmc, JSONArray colors, String type, JSONArray subtypes, String rarity, String set, String text, String artist, String number, String power, String toughness, String layout, float multiverseid, String imageUrl, JSONArray rulings, JSONArray foreignNames, JSONArray printings, String originalText, String originalType, String id) {
         this.name = name;
         this.names = names;
         this.manaCost = manaCost;
@@ -72,6 +72,11 @@ public class Card {
     public Card(JSONObject jsonObject) throws JSONException, NoSuchFieldException, IllegalAccessException {
 
         /**
+         * Substituir per GSON
+         * + INFO https://guides.codepath.com/android/Leveraging-the-Gson-Library
+         */
+
+        /**
          * Manera dinámica,
          * Observació: podría ser millor crear un String[] amb el nom dels atributs,
          * (o si tenim algún atribut que no surt al JSON, fer un filtre per als que començin amb "_")
@@ -81,8 +86,9 @@ public class Card {
                 if(a.getType().equals(String.class)){
                     Log.d("Card::String", a.getName());
                     a.set(this, jsonObject.getString(a.getName()));
-                }else if(a.getType().equals(Integer.class)){
+                }else if(a.getType().equals(int.class)){
                     Log.d("Card::Integer", a.getName());
+                    Log.d("Card::Integer value", jsonObject.getString(a.getName()));
                     a.set(this, Integer.parseInt(jsonObject.getString(a.getName())));
                 }else if(a.getType().equals(JSONArray.class)){
                     Log.d("Card::JSONArray", a.getName());
@@ -224,19 +230,19 @@ public class Card {
         this.number = number;
     }
 
-    public int getPower() {
+    public String getPower() {
         return power;
     }
 
-    public void setPower(int power) {
+    public void setPower(String power) {
         this.power = power;
     }
 
-    public int getToughness() {
+    public String getToughness() {
         return toughness;
     }
 
-    public void setToughness(int toughness) {
+    public void setToughness(String toughness) {
         this.toughness = toughness;
     }
 
