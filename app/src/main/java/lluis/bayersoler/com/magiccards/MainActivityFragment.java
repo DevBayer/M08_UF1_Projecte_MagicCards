@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,20 +16,22 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.List;
 
 import app.InitialData;
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
-import app.api.Card;
-import app.exceptions.ApiControllerException;
+import app.models.Card;
+import app.models.Cards;
+import retrofit2.Response;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    private ArrayList<Card> cards;
+    private List<Card> cards;
     private ListView CardList;
     private CardsAdapter adapter;
     private int page;
@@ -81,7 +84,6 @@ public class MainActivityFragment extends Fragment {
         });
 
         adapter = new CardsAdapter(getContext(), cards);
-
         CardList.setAdapter(adapter);
         return fragment;
     }
@@ -115,7 +117,7 @@ public class MainActivityFragment extends Fragment {
 
     private void refresh() {
         page = 1;
-        RefreshDataTask task = new RefreshDataTask();
+        LoadMoreTask task = new LoadMoreTask(page, 100);
         task.execute();
     }
 
@@ -125,37 +127,7 @@ public class MainActivityFragment extends Fragment {
         task.execute();
     }
 
-    private class RefreshDataTask extends AsyncTask<Void, Void, ArrayList<Card>> {
-        private Exception exception;
-        @Override
-        protected ArrayList<Card> doInBackground(Void... voids) {
-
-            ArrayList<Card> result = null;
-            try {
-                return result = ApiController.GetAllCards(1, 100);
-            }catch(ApiControllerException e){
-                this.exception = e;
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Card> cards) {
-            adapter.clear();
-            if(cards != null && exception == null){
-                adapter.addAll(cards);
-            }else if(exception != null){
-                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                dialogo1.setTitle("Error con la petición");
-                dialogo1.setMessage(this.exception.getMessage());
-                dialogo1.show();
-            }
-        }
-    }
-
-    private class LoadMoreTask extends AsyncTask<Void, Void, ArrayList<Card>> {
-        private Exception exception;
+    private class LoadMoreTask extends AsyncTask<Void, Void, Response<Cards>> {
         private int page;
         private int pageSize;
 
@@ -165,28 +137,32 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected ArrayList<Card> doInBackground(Void... voids) {
-
-            ArrayList<Card> result = null;
+        protected Response<Cards> doInBackground(Void... voids) {
+            ApiController api = new ApiController();
             try {
-                return result = ApiController.GetAllCards(page, pageSize);
-            }catch(ApiControllerException e){
-                this.exception = e;
+                Response<Cards> response = api.GetCards(page, pageSize);
+                return response;
+            } catch (IOException e ){
+                // handle error
+                Log.e("LoadMoreTask::bg", e.getMessage());
             }
-
-            return result;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Card> cards) {
-            if(cards != null && exception == null){
-                adapter.addAll(cards);
+        protected void onPostExecute(Response<Cards> cards) {
+            if(cards.isSuccessful()){
+                adapter.addAll(cards.body().getCards());
                 sync_loadmore = false;
-            }else if(exception != null){
-                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                dialogo1.setTitle("Error con la petición");
-                dialogo1.setMessage(this.exception.getMessage());
-                dialogo1.show();
+            }else{
+                try {
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                    dialogo1.setTitle("Error con la petición");
+                    dialogo1.setMessage(cards.errorBody().string());
+                    dialogo1.show();
+                }catch(IOException e){
+                    Log.e("LoadMoreTask::Pe", e.getMessage());
+                }
             }
         }
     }
