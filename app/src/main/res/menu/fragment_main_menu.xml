@@ -7,5 +7,7 @@
         app:showAsAction="always"
         android:visible="true"
         android:enabled="true"
-        android:icon="@drawable/icon_refresh" />
+        android:icon="@drawable/ic_menu_refresh" />
+    <item android:title="@string/action_settings"
+        android:id="@+id/action_settings" />
 </menu>
