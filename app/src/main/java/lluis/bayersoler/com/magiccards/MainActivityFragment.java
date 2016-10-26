@@ -18,12 +18,9 @@ import android.widget.ListView;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
-import app.InitialData;
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
-import app.models.Card;
 import app.models.Cards;
 import retrofit2.Response;
 
@@ -31,7 +28,6 @@ import retrofit2.Response;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    private List<Card> cards;
     private ListView CardList;
     private CardsAdapter adapter;
     private int page;
@@ -45,6 +41,12 @@ public class MainActivityFragment extends Fragment {
 
 
     @Override
+    public void onStart() {
+        super.onStart();
+        refresh();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -55,12 +57,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_main, container, false);
 
-        InputStreamReader file = new InputStreamReader(getResources().openRawResource(R.raw.initial_json));
-        InitialData iData = new InitialData(file);
-        cards = iData.getCards();
-
         CardList = (ListView) fragment.findViewById(R.id.CardList);
-
 
         CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -83,7 +80,7 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        adapter = new CardsAdapter(getContext(), cards);
+        adapter = new CardsAdapter(getContext(), 0);
         CardList.setAdapter(adapter);
         return fragment;
     }

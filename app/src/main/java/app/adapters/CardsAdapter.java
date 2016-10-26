@@ -17,6 +17,10 @@ import lluis.bayersoler.com.magiccards.R;
 
 public class CardsAdapter extends ArrayAdapter<Card> {
 
+    public CardsAdapter(Context context, int resource) {
+        super(context, resource);
+    }
+
     public CardsAdapter(Context context, List<Card> objects) {
         super(context, 0, objects);
     }
