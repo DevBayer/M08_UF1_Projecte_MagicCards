@@ -17,7 +17,6 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
