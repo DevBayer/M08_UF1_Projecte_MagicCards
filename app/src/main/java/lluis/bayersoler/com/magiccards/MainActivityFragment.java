@@ -1,5 +1,6 @@
 package lluis.bayersoler.com.magiccards;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -101,6 +102,10 @@ public class MainActivityFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
             refresh();
+            return true;
+        }else if(id == R.id.action_settings) {
+            Intent vista = new Intent(getContext(), SettingsActivity.class);
+            startActivity(vista);
             return true;
         }
 

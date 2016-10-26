@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <MultiSelectListPreference
+        android:key="colors"
+        android:title="@string/app_preference_colors"
+        android:entries="@array/app_preference_colors_list_titles"
+        android:entryValues="@array/app_preference_colors_list_values"
+        android:defaultValue="@array/app_preference_colors_list_values"
+        />
+
+    <MultiSelectListPreference
+        android:key="rarity"
+        android:title="@string/app_preference_rarity"
+        android:entries="@array/app_preference_rarity_list_titles"
+        android:entryValues="@array/app_preference_rarity_list_values"
+        android:defaultValue="@array/app_preference_rarity_list_values"
+        />
+
+</PreferenceScreen>
