@@ -46,7 +46,7 @@ public class CardsAdapter extends ArrayAdapter<Card> {
 
         // Carreguem la vista cardImage que es el ImageView i utilitzem Glide
         ImageView cardImage = (ImageView) convertView.findViewById(R.id.cardImage);
-        Glide.with(getContext()).load(card.getImageUrl()).crossFade().into(cardImage);
+        Glide.with(getContext()).load(card.getImageUrl()).placeholder(R.drawable.card).into(cardImage);
 
         TextView manaCost = (TextView) convertView.findViewById(R.id.txtManaCost);
         manaCost.setText(card.getCmc()+" Mana Cost");
