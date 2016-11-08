@@ -125,13 +125,11 @@ public class CardsAdapter extends ArrayAdapter<Card> {
                         drawable.setColorFilter(Color.parseColor("#33CC00"), PorterDuff.Mode.SRC_ATOP);
                     }
 
-
-
                     drawable.setBounds(
                             0,
                             0,
-                            drawable.getIntrinsicWidth(),
-                            drawable.getIntrinsicHeight());
+                            32, //drawable.getIntrinsicWidth(),
+                            32); //drawable.getIntrinsicHeight());
 
                     return drawable;
                 }
