@@ -136,6 +136,8 @@ public class CardsAdapter extends ArrayAdapter<Card> {
             }, null));
 
 
+        }else{
+            manaCost.setText("");
         }
 
 

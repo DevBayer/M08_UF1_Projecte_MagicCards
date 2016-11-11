@@ -1,13 +1,16 @@
 package lluis.bayersoler.com.magiccards;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,11 +22,16 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
 import app.models.Cards;
 import retrofit2.Response;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -136,9 +144,19 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected Response<Cards> doInBackground(Void... voids) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            Set<String> _defaultcolors = new HashSet<String>();
+            _defaultcolors.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_colors_list_values)));
+
+            Set<String> _defaultrarities = new HashSet<String>();
+            _defaultrarities.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_rarity_list_values)));
+
+            String colors = TextUtils.join("|", preferences.getStringSet("colors", _defaultcolors));
+            String rarities = TextUtils.join("|", preferences.getStringSet("rarity", _defaultrarities));
+
             ApiController api = new ApiController();
             try {
-                Response<Cards> response = api.GetCards(page, pageSize);
+                Response<Cards> response = api.GetCards(page, pageSize, colors, rarities);
                 return response;
             } catch (IOException e ){
                 // handle error

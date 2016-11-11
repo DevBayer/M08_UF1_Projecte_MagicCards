@@ -27,8 +27,8 @@ public class ApiController {
         service = retrofit.create(MagicTheGathering.class);
     }
 
-    public Response<Cards> GetCards(int page, int pageSize) throws IOException {
-        Call<Cards> cards = service.getCards(page, pageSize);
+    public Response<Cards> GetCards(int page, int pageSize, String colors, String rarity) throws IOException {
+        Call<Cards> cards = service.getCards(page, pageSize, colors, rarity);
         return cards.execute();
     }
 }
