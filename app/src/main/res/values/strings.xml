@@ -8,14 +8,18 @@
     <!-- App Preferences -->
     <string name="app_preference_colors">Colors</string>
     <string-array name="app_preference_colors_list_titles">
+        <item>Verd</item>
         <item>Vermell</item>
         <item>Blanc</item>
         <item>Blau</item>
+        <item>Negre</item>
     </string-array>
     <string-array name="app_preference_colors_list_values">
+        <item>green</item>
         <item>red</item>
         <item>white</item>
         <item>blue</item>
+        <item>black</item>
     </string-array>
     <string name="app_preference_rarity">Raresa</string>
     <string-array name="app_preference_rarity_list_titles">
@@ -105,4 +109,7 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

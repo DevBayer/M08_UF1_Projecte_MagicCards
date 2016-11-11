@@ -101,6 +101,7 @@ public class MainActivityFragment extends Fragment {
                 Card card = (Card) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(getContext(), DetailsActivity.class);
+                intent.putExtra("card", card);
                 startActivity(intent);
             }
         });

@@ -1,10 +1,12 @@
 
 package app.models;
 
+import java.io.Serializable;
+
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
-public class Ruling {
+public class Ruling implements Serializable {
 
     private String date;
     private String text;

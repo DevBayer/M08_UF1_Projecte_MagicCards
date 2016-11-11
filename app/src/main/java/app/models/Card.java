@@ -1,12 +1,16 @@
 
 package app.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
-public class Card {
+public class Card implements Serializable {
 
     private String name;
     private String manaCost;
