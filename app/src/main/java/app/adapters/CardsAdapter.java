@@ -53,7 +53,6 @@ public class CardsAdapter extends ArrayAdapter<Card> {
 
         // Carreguem la vista cardImage que es el ImageView i utilitzem Glide
         ImageView cardImage = (ImageView) convertView.findViewById(R.id.cardImage);
-        cardImage.setScaleType(ImageView.ScaleType.CENTER);
         Glide.with(getContext())
                 .load(card.getImageUrl())
                 .dontAnimate()
@@ -141,7 +140,15 @@ public class CardsAdapter extends ArrayAdapter<Card> {
 
 
         TextView PowerToughness = (TextView) convertView.findViewById(R.id.txtPowerToughness);
-        PowerToughness.setText(card.getPower()+"/"+card.getToughness());
+        String power = card.getPower();
+        String toughness = card.getPower();
+        if(power == null) power = ""+0;
+        if(toughness == null) toughness = ""+0;
+        if(power.equals("0") && toughness.equals("0")){
+            PowerToughness.setText("");
+        }else {
+            PowerToughness.setText(power + "/" + toughness);
+        }
 
 
         return convertView;
