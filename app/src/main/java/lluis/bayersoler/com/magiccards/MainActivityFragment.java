@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import app.adapters.CardsAdapter;
 import app.api.ApiController;
+import app.models.Card;
 import app.models.Cards;
 import retrofit2.Response;
 
@@ -90,6 +92,19 @@ public class MainActivityFragment extends Fragment {
         });
 
         adapter = new CardsAdapter(getContext(), 0);
+
+
+
+        CardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Card card = (Card) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         CardList.setAdapter(adapter);
         return fragment;
     }

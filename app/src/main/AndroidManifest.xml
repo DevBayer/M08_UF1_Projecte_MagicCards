@@ -28,6 +28,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lluis.bayersoler.com.magiccards.MainActivity" />
         </activity>
+        <activity android:name=".DetailsActivity"></activity>
     </application>
 
 </manifest>
