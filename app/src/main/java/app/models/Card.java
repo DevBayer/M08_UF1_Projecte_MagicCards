@@ -1,12 +1,25 @@
 
 package app.models;
 
+import android.content.Context;
+import android.databinding.BindingAdapter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Html;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
@@ -570,6 +583,90 @@ public class Card implements Serializable {
      */
     public void setRulings(List<Ruling> rulings) {
         this.rulings = rulings;
+    }
+
+    @BindingAdapter("imageUrl")
+    public static void setImageUrl(ImageView imageView, String url) {
+        Context context = imageView.getContext();
+        Glide.with(context).load(url).into(imageView);
+    }
+
+    /**
+     *
+     * Icons: W -> YELLOW (Sol), U -> BLUE (water), B -> GREY (calavera), R -> RED (fire), G -> GREEN (tree)
+     * @param textView
+     * @param cost
+     */
+    @BindingAdapter("manaCost")
+    public static void setManaCost(final TextView textView, String cost){
+        if(cost != null){
+            String manastr = "";
+            Pattern pattern = Pattern.compile("([A-Z0-9])+");
+            Matcher matcher = pattern.matcher(cost);
+            while (matcher.find()) {
+                for (int i = 0; i < matcher.groupCount(); i++) {
+                    System.out.println(i+" ->> "+matcher.group(i));
+                }
+                if(matcher.group().matches("[0-9]+")){
+                    manastr += matcher.group();
+                }else{
+                    if(matcher.group().equals("W")){
+                        manastr += "<img src='weather_sunny' />";
+                    }else if(matcher.group().equals("U")){
+                        manastr += "<img src='water' />";
+                    }else if(matcher.group().equals("B")){
+                        manastr += "<img src='skull' />";
+                    }else if(matcher.group().equals("R")){
+                        manastr += "<img src='pine_tree' />";
+                    }
+                }
+            }
+            textView.setText(manastr);
+
+            textView.setText(Html.fromHtml(manastr, new Html.ImageGetter(){
+
+                @Override
+                public Drawable getDrawable(String source) {
+                    Drawable drawable;
+                    Context context = textView.getContext();
+                    int dourceId = context.getResources()
+                                    .getIdentifier(source, "drawable", context.getPackageName());
+                    drawable = context.getResources()
+                                    .getDrawable(dourceId);
+
+                    if(source.equals("water")){
+                        drawable.setColorFilter(Color.parseColor("#33CCFF"), PorterDuff.Mode.SRC_ATOP);
+                    }else if(source.equals("weather_sunny")){
+                        drawable.setColorFilter(Color.parseColor("#FF6633"), PorterDuff.Mode.SRC_ATOP);
+                    }else if(source.equals("webhook")){
+                        drawable.setColorFilter(Color.parseColor("#B82E00"), PorterDuff.Mode.SRC_ATOP);
+                    }else if(source.equals("skull")){
+                        drawable.setColorFilter(Color.parseColor("#3D3D3D"), PorterDuff.Mode.SRC_ATOP);
+                    }else if(source.equals("pine_tree")){
+                        drawable.setColorFilter(Color.parseColor("#33CC00"), PorterDuff.Mode.SRC_ATOP);
+                    }
+
+                    drawable.setBounds(0, 0, 32, 32);
+
+                    return drawable;
+                }
+
+            }, null));
+        }else{
+            textView.setText("");
+        }
+    }
+
+    public String getPowerToughness(){
+        String power = this.getPower();
+        String toughness = this.getPower();
+        if(power == null) power = ""+0;
+        if(toughness == null) toughness = ""+0;
+        if(power.equals("0") && toughness.equals("0")){
+            return "";
+        }else {
+            return power + "/" + toughness;
+        }
     }
 
 }
