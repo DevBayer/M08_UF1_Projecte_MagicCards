@@ -22,6 +22,9 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Generated;
 
+import nl.qbusict.cupboard.annotation.Column;
+import nl.qbusict.cupboard.annotation.Ignore;
+
 @Generated("org.jsonschema2pojo")
 public class Card implements Serializable {
 
@@ -34,6 +37,7 @@ public class Card implements Serializable {
     private List<String> types = new ArrayList<String>();
     private List<String> subtypes = new ArrayList<String>();
     private String rarity;
+    @Column("set_value") // Realitzem aquesta anotació donat que SQL té la paraula "set/SET" reservada i tenim problemes
     private String set;
     private String setName;
     private String text;
