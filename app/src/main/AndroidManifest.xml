@@ -33,6 +33,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lluis.bayersoler.com.magiccards.MainActivity" />
         </activity>
+
+        <provider android:name="app.providers.MagicTheGatheringContentProvider" android:authorities="${applicationId}.provider" android:exported="false" />
+
     </application>
 
 </manifest>
