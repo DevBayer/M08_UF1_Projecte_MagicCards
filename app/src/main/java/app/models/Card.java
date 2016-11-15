@@ -608,9 +608,6 @@ public class Card implements Serializable {
             Pattern pattern = Pattern.compile("([A-Z0-9])+");
             Matcher matcher = pattern.matcher(cost);
             while (matcher.find()) {
-                for (int i = 0; i < matcher.groupCount(); i++) {
-                    System.out.println(i+" ->> "+matcher.group(i));
-                }
                 if(matcher.group().matches("[0-9]+")){
                     manastr += matcher.group();
                 }else{

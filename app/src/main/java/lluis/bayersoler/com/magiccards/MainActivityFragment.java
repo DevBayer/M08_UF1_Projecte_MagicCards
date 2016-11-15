@@ -2,6 +2,7 @@ package lluis.bayersoler.com.magiccards;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
@@ -44,7 +47,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ListView CardList;
     private CardsCursorAdapter adapter;
     private int page;
@@ -53,7 +56,7 @@ public class MainActivityFragment extends Fragment {
 
     public MainActivityFragment() {
         this.page = 1;
-        this.pageSize = 10;
+        this.pageSize = 100;
     }
 
 
@@ -76,6 +79,7 @@ public class MainActivityFragment extends Fragment {
 
         CardList = (ListView) fragment.findViewById(R.id.CardList);
 
+        /*
         CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -96,10 +100,9 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
+        */
 
         adapter = new CardsCursorAdapter(getContext(), Card.class);
-
-
 
         CardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,6 +116,7 @@ public class MainActivityFragment extends Fragment {
         });
 
         CardList.setAdapter(adapter);
+        getLoaderManager().initLoader(0, null, this);
         return fragment;
     }
 
@@ -179,13 +183,30 @@ public class MainActivityFragment extends Fragment {
             ApiController api = new ApiController();
             try {
                 Response<Cards> response = api.GetCards(page, pageSize, colors, rarities);
-                if(response.isSuccessful())
+                if(response.isSuccessful()) {
+                    DataManager.deleteCards(getContext());
                     DataManager.saveCards(response.body().getCards(), getContext());
+                }
             } catch (IOException e ){
                 // handle error
                 Log.e("LoadMoreTask::bg", e.getMessage());
             }
             return null;
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return DataManager.getCursorLoader(getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }
