@@ -22,8 +22,6 @@ public class CardsAdapter extends ArrayAdapter<Card> {
         super(context, 0, objects);
     }
 
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         CardlistRowBinding binding;
         // Obtenim el objecte Cards (segons la posició en la que es troba)

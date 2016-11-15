@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
+    sourceSets {
+        main.java.srcDirs += "/src/main/java/app"
+    }
     defaultConfig {
         applicationId "lluis.bayersoler.com.magiccards"
         minSdkVersion 16
@@ -36,5 +39,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.android.support:support-v4:24.2.1'
+    compile 'nl.qbusict:cupboard:2.1.4'
+    compile 'nl.littlerobots:cupboard-tools:0.2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 }

@@ -2,12 +2,16 @@ package lluis.bayersoler.com.magiccards;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,26 +32,31 @@ import java.util.HashSet;
 import java.util.Set;
 
 import app.adapters.CardsAdapter;
+import app.adapters.CardsCursorAdapter;
+import app.adapters.DataManager;
 import app.api.ApiController;
 import app.models.Card;
 import app.models.Cards;
+import app.providers.MagicTheGatheringContentProvider;
+import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import retrofit2.Response;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ListView CardList;
-    private CardsAdapter adapter;
+    private CardsCursorAdapter adapter;
     private int page;
     private int pageSize;
     private boolean sync_loadmore = false;
 
     public MainActivityFragment() {
         this.page = 1;
-        this.pageSize = 10;
+        this.pageSize = 100;
     }
 
 
@@ -70,6 +79,7 @@ public class MainActivityFragment extends Fragment {
 
         CardList = (ListView) fragment.findViewById(R.id.CardList);
 
+        /*
         CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -90,10 +100,9 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
+        */
 
-        adapter = new CardsAdapter(getContext(), 0);
-
-
+        adapter = new CardsCursorAdapter(getContext(), Card.class);
 
         CardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -107,6 +116,7 @@ public class MainActivityFragment extends Fragment {
         });
 
         CardList.setAdapter(adapter);
+        getLoaderManager().initLoader(0, null, this);
         return fragment;
     }
 
@@ -149,7 +159,7 @@ public class MainActivityFragment extends Fragment {
         task.execute();
     }
 
-    private class LoadMoreTask extends AsyncTask<Void, Void, Response<Cards>> {
+    private class LoadMoreTask extends AsyncTask<Void, Void, Void> {
         private int page;
         private int pageSize;
 
@@ -159,7 +169,7 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected Response<Cards> doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             Set<String> _defaultcolors = new HashSet<String>();
             _defaultcolors.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_colors_list_values)));
@@ -173,29 +183,30 @@ public class MainActivityFragment extends Fragment {
             ApiController api = new ApiController();
             try {
                 Response<Cards> response = api.GetCards(page, pageSize, colors, rarities);
-                return response;
+                if(response.isSuccessful()) {
+                    DataManager.deleteCards(getContext());
+                    DataManager.saveCards(response.body().getCards(), getContext());
+                }
             } catch (IOException e ){
                 // handle error
                 Log.e("LoadMoreTask::bg", e.getMessage());
             }
             return null;
         }
+    }
 
-        @Override
-        protected void onPostExecute(Response<Cards> cards) {
-            if(cards.isSuccessful()){
-                adapter.addAll(cards.body().getCards());
-                sync_loadmore = false;
-            }else{
-                try {
-                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                    dialogo1.setTitle("Error con la petición");
-                    dialogo1.setMessage(cards.errorBody().string());
-                    dialogo1.show();
-                }catch(IOException e){
-                    Log.e("LoadMoreTask::Pe", e.getMessage());
-                }
-            }
-        }
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return DataManager.getCursorLoader(getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }
