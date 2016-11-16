@@ -1,5 +1,6 @@
 package lluis.bayersoler.com.magiccards;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -53,17 +54,17 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private int page;
     private int pageSize;
     private boolean sync_loadmore = false;
+    private SharedPreferences preferences;
+    private ProgressDialog dialog;
 
     public MainActivityFragment() {
-        this.page = 1;
-        this.pageSize = 100;
+
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        refresh();
     }
 
     @Override
@@ -77,9 +78,23 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_main, container, false);
 
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Actualizando...");
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        this.page = preferences.getInt("page", 1);
+        this.pageSize = preferences.getInt("pageSize", 10);
+
+        //if(DataManager.getCountCards(getContext()) == 0){ // Evitem fer una consulta cada cop que es recrea la vista...
+        if(preferences.getBoolean("firstTime", true)){
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("firstTime", false);
+            editor.commit();
+            refresh();
+        }
+
         CardList = (ListView) fragment.findViewById(R.id.CardList);
 
-        /*
         CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -100,7 +115,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
             }
         });
-        */
 
         adapter = new CardsCursorAdapter(getContext(), Card.class);
 
@@ -148,13 +162,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
 
     private void refresh() {
-        page = 1;
-        LoadMoreTask task = new LoadMoreTask(page, 100);
+        preferences.edit().putInt("page", 1);
+        page = preferences.getInt("page", 1);
+        DataManager.deleteCards(getContext());
+        LoadMoreTask task = new LoadMoreTask(page, preferences.getInt("pageSize", 10));
         task.execute();
     }
 
     private void loadNextPage() {
         page = page+1;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("page", page);
+        editor.commit();
         LoadMoreTask task = new LoadMoreTask(page, pageSize);
         task.execute();
     }
@@ -169,8 +188,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             Set<String> _defaultcolors = new HashSet<String>();
             _defaultcolors.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_colors_list_values)));
 
@@ -179,19 +203,24 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
             String colors = TextUtils.join("|", preferences.getStringSet("colors", _defaultcolors));
             String rarities = TextUtils.join("|", preferences.getStringSet("rarity", _defaultrarities));
-
             ApiController api = new ApiController();
             try {
                 Response<Cards> response = api.GetCards(page, pageSize, colors, rarities);
                 if(response.isSuccessful()) {
-                    DataManager.deleteCards(getContext());
                     DataManager.saveCards(response.body().getCards(), getContext());
+                    sync_loadmore = false;
                 }
             } catch (IOException e ){
                 // handle error
                 Log.e("LoadMoreTask::bg", e.getMessage());
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
         }
     }
 

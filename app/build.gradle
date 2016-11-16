@@ -3,9 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
-    sourceSets {
-        main.java.srcDirs += "/src/main/java/app"
-    }
     defaultConfig {
         applicationId "lluis.bayersoler.com.magiccards"
         minSdkVersion 16

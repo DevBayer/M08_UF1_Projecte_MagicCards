@@ -1,6 +1,7 @@
 package app.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 
@@ -19,6 +20,11 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class DataManager {
     private static UriHelper URI_HELPER = UriHelper.with(MagicTheGatheringContentProvider.AUTHORITY);
     private static Uri CARD_URI = URI_HELPER.getUri(Card.class);
+
+    public static int getCountCards(Context context){
+        Cursor cards = cupboard().withContext(context).query(CARD_URI, Card.class).getCursor();
+        return cards.getCount();
+    }
 
     public static void saveCards(List<Card> cards, Context context) {
         cupboard().withContext(context).put(CARD_URI, Card.class, cards);

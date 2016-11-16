@@ -28,6 +28,7 @@ public class CardsCursorAdapter extends CupboardCursorAdapter<Card> {
 
     @Override
     public View newView(Context context, Card model, ViewGroup parent) {
+        System.out.println(model.getName());
         LayoutInflater inflater = LayoutInflater.from(context);
         CardlistRowBinding binding = DataBindingUtil.inflate(inflater, R.layout.cardlist_row, parent, false);
         return binding.getRoot();
