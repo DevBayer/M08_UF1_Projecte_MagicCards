@@ -162,10 +162,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
 
     private void refresh() {
-        preferences.edit().putInt("page", 1);
-        page = preferences.getInt("page", 1);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("page", 1);
         DataManager.deleteCards(getContext());
-        LoadMoreTask task = new LoadMoreTask(page, preferences.getInt("pageSize", 10));
+        LoadMoreTask task = new LoadMoreTask(1, preferences.getInt("pageSize", 10));
         task.execute();
     }
 
