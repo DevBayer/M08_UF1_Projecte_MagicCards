@@ -6,14 +6,10 @@ import android.databinding.BindingAdapter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,39 +18,22 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Generated;
 
-import nl.qbusict.cupboard.annotation.Column;
-import nl.qbusict.cupboard.annotation.Ignore;
-
 @Generated("org.jsonschema2pojo")
 public class Card implements Serializable {
 
     private String name;
     private String manaCost;
     private int cmc;
-    private List<String> colors = new ArrayList<String>();
     private List<String> colorIdentity = new ArrayList<String>();
     private String type;
     private List<String> types = new ArrayList<String>();
-    private List<String> subtypes = new ArrayList<String>();
     private String rarity;
-    @Column("set_value") // Realitzem aquesta anotació donat que SQL té la paraula "set/SET" reservada i tenim problemes
-    private String set;
-    private String setName;
     private String text;
     private String flavor;
     private String artist;
     private String power;
     private String toughness;
-    private String layout;
-    private int multiverseid;
     private String imageUrl;
-    private List<String> printings = new ArrayList<String>();
-    private String originalText;
-    private String originalType;
-    private List<Legality> legalities = new ArrayList<Legality>();
-    private String id;
-    private boolean reserved;
-    private List<Ruling> rulings = new ArrayList<Ruling>();
 
     /**
      * No args constructor for use in serialization
@@ -64,15 +43,12 @@ public class Card implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param imageUrl
-     * @param set
      * @param type
      * @param colorIdentity
      * @param id
-     * @param rulings
      * @param name
-     * @param layout
      * @param power
      * @param manaCost
      * @param artist
@@ -80,45 +56,22 @@ public class Card implements Serializable {
      * @param types
      * @param subtypes
      * @param text
-     * @param colors
-     * @param printings
      * @param rarity
      * @param flavor
-     * @param reserved
-     * @param originalType
-     * @param legalities
      * @param cmc
-     * @param originalText
-     * @param multiverseid
-     * @param setName
      */
-    public Card(String name, String manaCost, int cmc, List<String> colors, List<String> colorIdentity, String type, List<String> types, List<String> subtypes, String rarity, String set, String setName, String text, String flavor, String artist, String power, String toughness, String layout, int multiverseid, String imageUrl, List<String> printings, String originalText, String originalType, List<Legality> legalities, String id, boolean reserved, List<Ruling> rulings) {
+    public Card(String name, String manaCost, int cmc, List<String> _colorIdentity, String type, List<String> _types, String rarity, String text, String flavor, String artist, String power, String toughness, String imageUrl) {
         this.name = name;
         this.manaCost = manaCost;
         this.cmc = cmc;
-        this.colors = colors;
-        this.colorIdentity = colorIdentity;
         this.type = type;
-        this.types = types;
-        this.subtypes = subtypes;
         this.rarity = rarity;
-        this.set = set;
-        this.setName = setName;
         this.text = text;
         this.flavor = flavor;
         this.artist = artist;
         this.power = power;
         this.toughness = toughness;
-        this.layout = layout;
-        this.multiverseid = multiverseid;
         this.imageUrl = imageUrl;
-        this.printings = printings;
-        this.originalText = originalText;
-        this.originalType = originalType;
-        this.legalities = legalities;
-        this.id = id;
-        this.reserved = reserved;
-        this.rulings = rulings;
     }
 
     /**
@@ -178,36 +131,19 @@ public class Card implements Serializable {
     /**
      * 
      * @return
-     *     The colors
-     */
-    public List<String> getColors() {
-        return colors;
-    }
-
-    /**
-     * 
-     * @param colors
-     *     The colors
-     */
-    public void setColors(List<String> colors) {
-        this.colors = colors;
-    }
-
-    /**
-     * 
-     * @return
      *     The colorIdentity
      */
     public List<String> getColorIdentity() {
         return colorIdentity;
     }
 
+
     /**
      * 
      * @param colorIdentity
      *     The colorIdentity
      */
-    public void setColorIdentity(List<String> colorIdentity) {
+    public void _setColorIdentity(List<String> colorIdentity) {
         this.colorIdentity = colorIdentity;
     }
 
@@ -250,24 +186,6 @@ public class Card implements Serializable {
     /**
      * 
      * @return
-     *     The subtypes
-     */
-    public List<String> getSubtypes() {
-        return subtypes;
-    }
-
-    /**
-     * 
-     * @param subtypes
-     *     The subtypes
-     */
-    public void setSubtypes(List<String> subtypes) {
-        this.subtypes = subtypes;
-    }
-
-    /**
-     * 
-     * @return
      *     The rarity
      */
     public String getRarity() {
@@ -281,42 +199,6 @@ public class Card implements Serializable {
      */
     public void setRarity(String rarity) {
         this.rarity = rarity;
-    }
-
-    /**
-     * 
-     * @return
-     *     The set
-     */
-    public String getSet() {
-        return set;
-    }
-
-    /**
-     * 
-     * @param set
-     *     The set
-     */
-    public void setSet(String set) {
-        this.set = set;
-    }
-
-    /**
-     * 
-     * @return
-     *     The setName
-     */
-    public String getSetName() {
-        return setName;
-    }
-
-    /**
-     * 
-     * @param setName
-     *     The setName
-     */
-    public void setSetName(String setName) {
-        this.setName = setName;
     }
 
     /**
@@ -412,42 +294,6 @@ public class Card implements Serializable {
     /**
      * 
      * @return
-     *     The layout
-     */
-    public String getLayout() {
-        return layout;
-    }
-
-    /**
-     * 
-     * @param layout
-     *     The layout
-     */
-    public void setLayout(String layout) {
-        this.layout = layout;
-    }
-
-    /**
-     * 
-     * @return
-     *     The multiverseid
-     */
-    public int getMultiverseid() {
-        return multiverseid;
-    }
-
-    /**
-     * 
-     * @param multiverseid
-     *     The multiverseid
-     */
-    public void setMultiverseid(int multiverseid) {
-        this.multiverseid = multiverseid;
-    }
-
-    /**
-     * 
-     * @return
      *     The imageUrl
      */
     public String getImageUrl() {
@@ -461,132 +307,6 @@ public class Card implements Serializable {
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    /**
-     * 
-     * @return
-     *     The printings
-     */
-    public List<String> getPrintings() {
-        return printings;
-    }
-
-    /**
-     * 
-     * @param printings
-     *     The printings
-     */
-    public void setPrintings(List<String> printings) {
-        this.printings = printings;
-    }
-
-    /**
-     * 
-     * @return
-     *     The originalText
-     */
-    public String getOriginalText() {
-        return originalText;
-    }
-
-    /**
-     * 
-     * @param originalText
-     *     The originalText
-     */
-    public void setOriginalText(String originalText) {
-        this.originalText = originalText;
-    }
-
-    /**
-     * 
-     * @return
-     *     The originalType
-     */
-    public String getOriginalType() {
-        return originalType;
-    }
-
-    /**
-     * 
-     * @param originalType
-     *     The originalType
-     */
-    public void setOriginalType(String originalType) {
-        this.originalType = originalType;
-    }
-
-    /**
-     * 
-     * @return
-     *     The legalities
-     */
-    public List<Legality> getLegalities() {
-        return legalities;
-    }
-
-    /**
-     * 
-     * @param legalities
-     *     The legalities
-     */
-    public void setLegalities(List<Legality> legalities) {
-        this.legalities = legalities;
-    }
-
-    /**
-     * 
-     * @return
-     *     The id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * 
-     * @param id
-     *     The id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * 
-     * @return
-     *     The reserved
-     */
-    public boolean isReserved() {
-        return reserved;
-    }
-
-    /**
-     * 
-     * @param reserved
-     *     The reserved
-     */
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
-    }
-
-    /**
-     * 
-     * @return
-     *     The rulings
-     */
-    public List<Ruling> getRulings() {
-        return rulings;
-    }
-
-    /**
-     * 
-     * @param rulings
-     *     The rulings
-     */
-    public void setRulings(List<Ruling> rulings) {
-        this.rulings = rulings;
     }
 
     @BindingAdapter("imageUrl")

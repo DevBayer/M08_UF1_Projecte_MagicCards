@@ -2,6 +2,7 @@ package app.adapters;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class CardsCursorAdapter extends CupboardCursorAdapter<Card> {
 
     @Override
     public View newView(Context context, Card model, ViewGroup parent) {
-        System.out.println(model.getName());
         LayoutInflater inflater = LayoutInflater.from(context);
         CardlistRowBinding binding = DataBindingUtil.inflate(inflater, R.layout.cardlist_row, parent, false);
         return binding.getRoot();

@@ -1,6 +1,9 @@
 package app.services;
 
-import app.models.Cards;
+import java.util.ArrayList;
+import java.util.Map;
+
+import app.models.Card;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -12,6 +15,6 @@ import retrofit2.http.Query;
 public interface MagicTheGathering {
 
     @GET("cards")
-    Call<Cards> getCards(@Query("page") int page, @Query("pageSize") int pageSize, @Query("colors") String colors, @Query("rarity") String rarity);
+    Call<Map<String, ArrayList<Card>>> getCards(@Query("page") int page, @Query("pageSize") int pageSize, @Query("colors") String colors, @Query("rarity") String rarity);
 
 }

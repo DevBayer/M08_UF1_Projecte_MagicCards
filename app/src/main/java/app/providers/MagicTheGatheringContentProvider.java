@@ -3,8 +3,6 @@ package app.providers;
 import com.google.gson.Gson;
 
 import app.models.Card;
-import app.models.Legality;
-import app.models.Ruling;
 import lluis.bayersoler.com.magiccards.BuildConfig;
 import nl.littlerobots.cupboard.tools.convert.ListFieldConverterFactory;
 import nl.littlerobots.cupboard.tools.provider.CupboardContentProvider;
@@ -22,13 +20,9 @@ public class MagicTheGatheringContentProvider extends CupboardContentProvider {
 
     public static final String AUTHORITY =BuildConfig.APPLICATION_ID + ".provider";
 
-
-
     static {
         CupboardFactory.setCupboard(new CupboardBuilder().
-                registerFieldConverterFactory(new ListFieldConverterFactory(new Gson())).useAnnotations().build());
-        cupboard().register(Legality.class);
-        cupboard().register(Ruling.class);
+                registerFieldConverterFactory(new ListFieldConverterFactory(new Gson())).build());
         cupboard().register(Card.class);
     }
 

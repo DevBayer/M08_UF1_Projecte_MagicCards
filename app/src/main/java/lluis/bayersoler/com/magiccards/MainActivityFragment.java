@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -117,7 +118,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         });
 
         adapter = new CardsCursorAdapter(getContext(), Card.class);
-
         CardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -164,6 +164,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private void refresh() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("page", 1);
+        editor.apply();
         DataManager.deleteCards(getContext());
         LoadMoreTask task = new LoadMoreTask(1, preferences.getInt("pageSize", 10));
         task.execute();
@@ -171,9 +172,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private void loadNextPage() {
         page = page+1;
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("page", page);
-        editor.commit();
         LoadMoreTask task = new LoadMoreTask(page, pageSize);
         task.execute();
     }
@@ -205,15 +203,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             String rarities = TextUtils.join("|", preferences.getStringSet("rarity", _defaultrarities));
             ApiController api = new ApiController();
             try {
-                Response<Cards> response = api.GetCards(page, pageSize, colors, rarities);
-                if(response.isSuccessful()) {
-                    DataManager.saveCards(response.body().getCards(), getContext());
-                    sync_loadmore = false;
+                ArrayList<Card> response = api.GetCards(page, pageSize, colors, rarities);
+                if(response != null){
+                    DataManager.saveCards(response, getContext());
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt("page", page);
+                    editor.apply();
                 }
             } catch (IOException e ){
                 // handle error
                 Log.e("LoadMoreTask::bg", e.getMessage());
             }
+            sync_loadmore = false;
             return null;
         }
 

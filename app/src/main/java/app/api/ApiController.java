@@ -1,6 +1,14 @@
 package app.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import app.models.*;
 import app.services.MagicTheGathering;
@@ -27,8 +35,16 @@ public class ApiController {
         service = retrofit.create(MagicTheGathering.class);
     }
 
-    public Response<Cards> GetCards(int page, int pageSize, String colors, String rarity) throws IOException {
-        Call<Cards> cards = service.getCards(page, pageSize, colors, rarity);
-        return cards.execute();
+    public ArrayList<Card>
+        GetCards(int page, int pageSize, String colors, String rarity) throws IOException {
+        Call<Map<String, ArrayList<Card>>> cardsCall = service.getCards(page, pageSize, colors, rarity);
+
+        Response<Map<String, ArrayList<Card>>> response = cardsCall.execute();
+
+        if(!response.isSuccessful()) return null;
+
+        Map<String, ArrayList<Card>> cards = response.body();
+
+        return cards.get("cards");
     }
 }
