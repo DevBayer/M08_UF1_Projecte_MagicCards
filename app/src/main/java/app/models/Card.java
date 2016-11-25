@@ -60,7 +60,7 @@ public class Card implements Serializable {
      * @param flavor
      * @param cmc
      */
-    public Card(String name, String manaCost, int cmc, List<String> _colorIdentity, String type, List<String> _types, String rarity, String text, String flavor, String artist, String power, String toughness, String imageUrl) {
+    public Card(String name, String manaCost, int cmc, List<String> colorIdentity, String type, List<String> types, String rarity, String text, String flavor, String artist, String power, String toughness, String imageUrl) {
         this.name = name;
         this.manaCost = manaCost;
         this.cmc = cmc;
@@ -72,6 +72,8 @@ public class Card implements Serializable {
         this.power = power;
         this.toughness = toughness;
         this.imageUrl = imageUrl;
+        this.colorIdentity = colorIdentity;
+        this.types = types;
     }
 
     /**

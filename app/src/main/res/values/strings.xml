@@ -15,11 +15,11 @@
         <item>Negre</item>
     </string-array>
     <string-array name="app_preference_colors_list_values">
-        <item>green</item>
-        <item>red</item>
-        <item>white</item>
-        <item>blue</item>
-        <item>black</item>
+        <item>G</item>
+        <item>R</item>
+        <item>W</item>
+        <item>U</item>
+        <item>B</item>
     </string-array>
     <string name="app_preference_rarity">Raresa</string>
     <string-array name="app_preference_rarity_list_titles">

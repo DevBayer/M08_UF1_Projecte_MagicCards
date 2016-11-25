@@ -33,18 +33,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import app.adapters.CardsAdapter;
 import app.adapters.CardsCursorAdapter;
 import app.adapters.DataManager;
 import app.api.ApiController;
 import app.models.Card;
-import app.models.Cards;
-import app.providers.MagicTheGatheringContentProvider;
-import nl.littlerobots.cupboard.tools.provider.UriHelper;
-import retrofit2.Response;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -84,13 +76,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         this.page = preferences.getInt("page", 1);
-        this.pageSize = preferences.getInt("pageSize", 10);
+        this.pageSize = preferences.getInt("pageSize", 100);
 
         //if(DataManager.getCountCards(getContext()) == 0){ // Evitem fer una consulta cada cop que es recrea la vista...
         if(preferences.getBoolean("firstTime", true)){
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("firstTime", false);
-            editor.commit();
+            editor.apply();
             refresh();
         }
 
@@ -130,6 +122,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         });
 
         CardList.setAdapter(adapter);
+
         getLoaderManager().initLoader(0, null, this);
         return fragment;
     }
@@ -166,7 +159,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         editor.putInt("page", 1);
         editor.apply();
         DataManager.deleteCards(getContext());
-        LoadMoreTask task = new LoadMoreTask(1, preferences.getInt("pageSize", 10));
+        LoadMoreTask task = new LoadMoreTask(1, preferences.getInt("pageSize", 100));
         task.execute();
     }
 
@@ -193,22 +186,16 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Set<String> _defaultcolors = new HashSet<String>();
-            _defaultcolors.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_colors_list_values)));
-
-            Set<String> _defaultrarities = new HashSet<String>();
-            _defaultrarities.addAll(Arrays.asList(getResources().getStringArray(R.array.app_preference_rarity_list_values)));
-
-            String colors = TextUtils.join("|", preferences.getStringSet("colors", _defaultcolors));
-            String rarities = TextUtils.join("|", preferences.getStringSet("rarity", _defaultrarities));
             ApiController api = new ApiController();
             try {
-                ArrayList<Card> response = api.GetCards(page, pageSize, colors, rarities);
-                if(response != null){
-                    DataManager.saveCards(response, getContext());
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putInt("page", page);
-                    editor.apply();
+                if(api.totalcount == 0 || api.totalcount > page) {
+                    ArrayList<Card> response = api.GetCards(page, pageSize);
+                    if (response != null) {
+                        DataManager.saveCards(response, getContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putInt("page", page);
+                        editor.apply();
+                    }
                 }
             } catch (IOException e ){
                 // handle error
@@ -232,6 +219,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data.getCount() == 0){
+            loadNextPage();
+        }
         adapter.swapCursor(data);
     }
 

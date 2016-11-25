@@ -23,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiController {
     private static final String BASE_URL = "https://api.magicthegathering.io/v1/";
+    public int totalcount = 0;
 
     private MagicTheGathering service;
 
@@ -33,15 +34,17 @@ public class ApiController {
                 .build();
 
         service = retrofit.create(MagicTheGathering.class);
+
     }
 
-    public ArrayList<Card>
-        GetCards(int page, int pageSize, String colors, String rarity) throws IOException {
-        Call<Map<String, ArrayList<Card>>> cardsCall = service.getCards(page, pageSize, colors, rarity);
+    public ArrayList<Card> GetCards(int page, int pageSize) throws IOException {
+        Call<Map<String, ArrayList<Card>>> cardsCall = service.getCards(page, pageSize);
 
         Response<Map<String, ArrayList<Card>>> response = cardsCall.execute();
 
         if(!response.isSuccessful()) return null;
+
+        totalcount = Integer.parseInt(response.headers().get("Total-count"));
 
         Map<String, ArrayList<Card>> cards = response.body();
 

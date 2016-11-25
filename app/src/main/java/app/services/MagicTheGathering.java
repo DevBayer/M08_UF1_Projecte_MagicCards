@@ -15,6 +15,6 @@ import retrofit2.http.Query;
 public interface MagicTheGathering {
 
     @GET("cards")
-    Call<Map<String, ArrayList<Card>>> getCards(@Query("page") int page, @Query("pageSize") int pageSize, @Query("colors") String colors, @Query("rarity") String rarity);
+    Call<Map<String, ArrayList<Card>>> getCards(@Query("page") int page, @Query("pageSize") int pageSize);
 
 }
