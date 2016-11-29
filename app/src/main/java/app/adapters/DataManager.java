@@ -59,24 +59,35 @@ public class DataManager {
         String selection = "";
         String[] selectionArgs = new String[rarities.size() + colors.size()];
 
-        selection += "(";
+        if (rarities.size() > 0) selection += "(";
         int i = 0;
-        for (String rarity: rarities) {
+        for (String rarity : rarities) {
             selection += " rarity=? OR";
             selectionArgs[i] = rarity;
             i++;
         }
-        selection = selection.substring(0, selection.length()-2);
-        selection += ") AND (";
-        for (String color: colors) {
+
+        if (rarities.size() > 0) {
+            selection = selection.substring(0, selection.length() - 2);
+            selection += ")";
+        }
+
+        if(rarities.size() > 0 && colors.size() > 0){
+            selection += " AND ";
+        }
+
+        if(colors.size() > 0 ){
+            selection += "(";
+        }
+        for (String color : colors) {
             selection += " colorIdentity LIKE ? OR";
-            selectionArgs[i] = "%"+color+"%";
+            selectionArgs[i] = "%" + color + "%";
             i++;
         }
-        selection = selection.substring(0, selection.length()-2);
-        selection += ")";
-        System.out.println(selection);
-
+        if (colors.size() > 0){
+            selection = selection.substring(0, selection.length() - 2);
+            selection += ")";
+        }
         return new CursorLoader(context, CARD_URI, null, selection, selectionArgs, null);
     }
 }
