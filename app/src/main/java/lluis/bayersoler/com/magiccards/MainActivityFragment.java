@@ -71,10 +71,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Card card = (Card) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(getContext(), DetailsActivity.class);
-                intent.putExtra("card", card);
-                startActivity(intent);
+                if(getResources().getBoolean(R.bool.tablet)) {
+                    Events.create("loadDetails").param(card).post();
+                }else {
+                    Intent intent = new Intent(getContext(), DetailsActivity.class);
+                    intent.putExtra("card", card);
+                    startActivity(intent);
+                }
             }
         });
 
