@@ -42,6 +42,7 @@ public class ApiService extends IntentService {
             if(preferences.getBoolean("firstTime", true)){
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("firstTime", false);
+                editor.apply();
                 totalItems = 0;
             }else{
                 totalItems = DataManager.getCountCards(this);
