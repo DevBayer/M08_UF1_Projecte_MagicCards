@@ -4,18 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
-import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,20 +18,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.alexvasilkov.events.Events;
 import app.adapters.CardsCursorAdapter;
 import app.adapters.DataManager;
 import app.api.ApiController;
 import app.models.Card;
+import app.services.ApiService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,20 +34,14 @@ import app.models.Card;
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ListView CardList;
     private CardsCursorAdapter adapter;
-    private int page;
-    private int pageSize;
-    private boolean sync_loadmore = false;
     private SharedPreferences preferences;
     private ProgressDialog dialog;
-
-    public MainActivityFragment() {
-
-    }
-
+    private Snackbar snack;
 
     @Override
     public void onStart() {
         super.onStart();
+        Events.register(this);
     }
 
     @Override
@@ -72,42 +56,15 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         View fragment = inflater.inflate(R.layout.fragment_main, container, false);
 
         dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Actualizando...");
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setMessage("Descargando...");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        this.page = preferences.getInt("page", 1);
-        this.pageSize = preferences.getInt("pageSize", 100);
 
-        //if(DataManager.getCountCards(getContext()) == 0){ // Evitem fer una consulta cada cop que es recrea la vista...
-        if(preferences.getBoolean("firstTime", true)){
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("firstTime", false);
-            editor.apply();
-            refresh();
-        }
+        Intent i = new Intent(getContext(),ApiService.class);
+        getActivity().startService(i);
 
         CardList = (ListView) fragment.findViewById(R.id.CardList);
-
-        CardList.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
-                {
-                    if(sync_loadmore == false)
-                    {
-                        sync_loadmore = true;
-                        loadNextPage();
-                    }
-                }
-
-            }
-        });
 
         adapter = new CardsCursorAdapter(getContext(), Card.class);
         CardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -153,62 +110,42 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         return super.onOptionsItemSelected(item);
     }
 
-
     private void refresh() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("page", 1);
         editor.apply();
         DataManager.deleteCards(getContext());
-        LoadMoreTask task = new LoadMoreTask(1, preferences.getInt("pageSize", 100));
-        task.execute();
+
+        Intent i = new Intent(getContext(),ApiService.class);
+        getActivity().startService(i);
     }
 
-    private void loadNextPage() {
-        page = page+1;
-        LoadMoreTask task = new LoadMoreTask(page, pageSize);
-        task.execute();
+    @Events.Subscribe("start-downloading-data")
+    void onStartDownloadData() {
+        Log.d("XXXX", "onStartDownloadData");
+        dialog.show();
     }
 
-    private class LoadMoreTask extends AsyncTask<Void, Void, Void> {
-        private int page;
-        private int pageSize;
+    @Events.Subscribe("finish-downloading-data")
+    void onStopDownloadData() {
+        Log.d("XXXX", "onStopDownloadData");
+        dialog.dismiss();
+    }
 
-        public LoadMoreTask(int page, int pageSize) {
-            this.page = page;
-            this.pageSize = pageSize;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ApiController api = new ApiController();
-            try {
-                if(api.totalcount == 0 || api.totalcount > page) {
-                    ArrayList<Card> response = api.GetCards(page, pageSize);
-                    if (response != null) {
-                        DataManager.saveCards(response, getContext());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putInt("page", page);
-                        editor.apply();
-                    }
-                }
-            } catch (IOException e ){
-                // handle error
-                Log.e("LoadMoreTask::bg", e.getMessage());
+    @Events.Subscribe("progress-downloading-data")
+    void onProgressDownloadData(int total, int actual) {
+        Log.d("XXXX", "onProgressDownloadData");
+        dialog.setMax(total);
+        dialog.setProgress(actual);
+        if(!dialog.isShowing()){
+            if(snack == null) {
+                snack = Snackbar.make(getView(), "Descargando " + actual + "/" + total, Snackbar.LENGTH_INDEFINITE);
             }
-            sync_loadmore = false;
-            return null;
-        }
+            snack.setText("Descargando " + actual + "/" + total);
+            if(!snack.isShown()){
+                snack.show();
+            }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dialog.dismiss();
         }
     }
 
@@ -219,9 +156,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data.getCount() == 0){
-            loadNextPage();
-        }
         adapter.swapCursor(data);
     }
 

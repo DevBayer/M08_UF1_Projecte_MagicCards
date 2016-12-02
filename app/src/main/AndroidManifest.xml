@@ -28,14 +28,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lluis.bayersoler.com.magiccards.MainActivity" />
         </activity>
-        <activity android:name=".DetailsActivity" android:parentActivityName=".MainActivity">
+        <activity
+            android:name=".DetailsActivity"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lluis.bayersoler.com.magiccards.MainActivity" />
         </activity>
 
-        <provider android:name="app.providers.MagicTheGatheringContentProvider" android:authorities="${applicationId}.provider" android:exported="false" />
+        <provider
+            android:name="app.providers.MagicTheGatheringContentProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false" />
 
+        <service
+            android:name="app.services.ApiService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

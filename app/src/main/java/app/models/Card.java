@@ -23,7 +23,7 @@ public class Card implements Serializable {
 
     private String name;
     private String manaCost;
-    private int cmc;
+    private Double cmc;
     private List<String> colorIdentity = new ArrayList<String>();
     private String type;
     private List<String> types = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class Card implements Serializable {
      * @param flavor
      * @param cmc
      */
-    public Card(String name, String manaCost, int cmc, List<String> colorIdentity, String type, List<String> types, String rarity, String text, String flavor, String artist, String power, String toughness, String imageUrl) {
+    public Card(String name, String manaCost, Double cmc, List<String> colorIdentity, String type, List<String> types, String rarity, String text, String flavor, String artist, String power, String toughness, String imageUrl) {
         this.name = name;
         this.manaCost = manaCost;
         this.cmc = cmc;
@@ -117,7 +117,7 @@ public class Card implements Serializable {
      * @return
      *     The cmc
      */
-    public int getCmc() {
+    public Double getCmc() {
         return cmc;
     }
 
@@ -126,7 +126,7 @@ public class Card implements Serializable {
      * @param cmc
      *     The cmc
      */
-    public void setCmc(int cmc) {
+    public void setCmc(Double cmc) {
         this.cmc = cmc;
     }
 

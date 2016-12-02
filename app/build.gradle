@@ -38,5 +38,6 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'nl.qbusict:cupboard:2.1.4'
     compile 'nl.littlerobots:cupboard-tools:0.2.0'
+    compile 'com.alexvasilkov:events:1.0.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 }
