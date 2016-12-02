@@ -46,12 +46,12 @@ public class ApiService extends IntentService {
             }else{
                 totalItems = DataManager.getCountCards(this);
             }
-            if(totalItems >= api.totalcount) {
+            if(api.totalcount != 0 && totalItems >= api.totalcount) {
                 return;
             }
             Events.post("start-downloading-data");
             try {
-                if(api.totalcount > totalItems) {
+                if(api.totalcount >= totalItems) {
                     do {
                         totalItems += doRequest(api, page, 100);
                         Events.create("progress-downloading-data").param(api.totalcount / 100, page).post();

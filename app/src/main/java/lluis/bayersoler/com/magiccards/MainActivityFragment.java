@@ -56,7 +56,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         View fragment = inflater.inflate(R.layout.fragment_main, container, false);
 
         dialog = new ProgressDialog(getContext());
-        snack = Snackbar.make(null, null, Snackbar.LENGTH_INDEFINITE).setDuration(Snackbar.LENGTH_INDEFINITE);
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         dialog.setMessage("Descargando...");
 
@@ -139,10 +138,14 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         dialog.setMax(total);
         dialog.setProgress(actual);
         if(!dialog.isShowing()){
-            snack.setText("Descargando "+actual+"/"+total);
-                    if(!snack.isShown()) {
-                        snack.show();
-                    }
+            if(snack == null) {
+                snack = Snackbar.make(getView(), "Descargando " + actual + "/" + total, Snackbar.LENGTH_INDEFINITE);
+            }
+            snack.setText("Descargando " + actual + "/" + total);
+            if(!snack.isShown()){
+                snack.show();
+            }
+
         }
     }
 
