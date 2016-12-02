@@ -10,6 +10,8 @@ import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Generated;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.CropSquareTransformation;
+import jp.wasabeef.glide.transformations.CropTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 @Generated("org.jsonschema2pojo")
 public class Card implements Serializable {
@@ -314,7 +321,13 @@ public class Card implements Serializable {
     @BindingAdapter("imageUrl")
     public static void setImageUrl(ImageView imageView, String url) {
         Context context = imageView.getContext();
-        Glide.with(context).load(url).into(imageView);
+        Glide.with(context).load(url).bitmapTransform(new RoundedCornersTransformation(context, 5, 5)).into(imageView);
+    }
+
+    @BindingAdapter("imageUrlList")
+    public static void setImageUrlList(ImageView imageView, String url) {
+        Context context = imageView.getContext();
+        Glide.with(context).load(url).bitmapTransform(new CropTransformation(context, 300, 250, CropTransformation.CropType.TOP), new CropCircleTransformation(context)).into(imageView);
     }
 
     /**

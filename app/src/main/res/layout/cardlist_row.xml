@@ -19,7 +19,7 @@
             android:layout_height="115dp">
 
             <ImageView
-                app:imageUrl="@{card.imageUrl}"
+                app:imageUrlList="@{card.imageUrl}"
                 android:layout_width="0dp"
                 app:srcCompat="@drawable/card"
                 android:id="@+id/cardImage"

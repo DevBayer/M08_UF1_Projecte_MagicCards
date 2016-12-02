@@ -50,9 +50,10 @@ public class ApiService extends IntentService {
             if(api.totalcount != 0 && totalItems >= api.totalcount) {
                 return;
             }
-            Events.post("start-downloading-data");
+            Log.d("EEEE", "totalItems: "+totalItems+" "+"totalcount: "+api.totalcount);
             try {
                 if(api.totalcount >= totalItems) {
+                    Events.post("start-downloading-data");
                     do {
                         totalItems += doRequest(api, page, 100);
                         Events.create("progress-downloading-data").param(api.totalcount / 100, page).post();
@@ -60,7 +61,7 @@ public class ApiService extends IntentService {
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putInt("page", page);
                         editor.apply();
-                    } while (api.totalcount > totalItems);
+                    } while (api.totalcount >= totalItems);
                 }
             } catch (IOException e ){
                 Log.e("LoadMoreTask::bg", e.getMessage());
