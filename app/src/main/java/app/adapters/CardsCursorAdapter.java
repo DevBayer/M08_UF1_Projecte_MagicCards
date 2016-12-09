@@ -24,6 +24,7 @@ public class CardsCursorAdapter extends CupboardCursorAdapter<Card> {
     @Override
     public void bindView(View view, Context context, Card model) {
         CardlistRowBinding binding = DataBindingUtil.getBinding(view);
+        System.out.println(model.getName());
         binding.setCard(model);
     }
 

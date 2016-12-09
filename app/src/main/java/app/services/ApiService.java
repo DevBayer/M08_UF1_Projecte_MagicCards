@@ -34,11 +34,6 @@ public class ApiService extends IntentService {
             int page, totalItems;
             page = preferences.getInt("page", 1);
             ApiController api = new ApiController();
-            try {
-                api.getTotalCount();
-            }catch(IOException e){
-
-            }
             if(preferences.getBoolean("firstTime", true)){
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("firstTime", false);

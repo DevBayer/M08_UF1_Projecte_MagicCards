@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Generated;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 @Generated("org.jsonschema2pojo")
 public class Card implements Serializable {
 
@@ -314,9 +317,15 @@ public class Card implements Serializable {
     @BindingAdapter("imageUrl")
     public static void setImageUrl(ImageView imageView, String url) {
         Context context = imageView.getContext();
-        Glide.with(context).load(url).into(imageView);
+        Glide.with(context).load(url).bitmapTransform(new RoundedCornersTransformation(context, 5, 5)).into(imageView);
     }
 
+    @BindingAdapter("imageUrlThumb")
+    public static void setImageUrlThumb(ImageView imageView, String url) {
+        Context context = imageView.getContext();
+        Glide.with(context).load(url).bitmapTransform(new CropCircleTransformation(context)).into(imageView);
+    }
+    
     /**
      *
      * Icons: W -> YELLOW (Sol), U -> BLUE (water), B -> GREY (calavera), R -> RED (fire), G -> GREEN (tree)

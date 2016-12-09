@@ -54,7 +54,8 @@ public abstract class CupboardCursorAdapter<T> extends CursorAdapter {
         if (getCursor().moveToPosition(position)) {
             return mCupboard.withCursor(getCursor()).get(mEntityClass);
         } else {
-            throw new IllegalArgumentException("Invalid position: " + position);
+            return null;
+            //throw new IllegalArgumentException("Invalid position: " + position);
         }
     }
 }

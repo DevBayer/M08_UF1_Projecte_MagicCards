@@ -34,14 +34,7 @@ public class ApiController {
                 .build();
 
         service = retrofit.create(MagicTheGathering.class);
-    }
-
-    public int getTotalCount() throws IOException{
-        Call<Map<String, ArrayList<Card>>> cardsCall = service.getCards(1, 10);
-        Response<Map<String, ArrayList<Card>>> response = cardsCall.execute();
-
-        if(!response.isSuccessful()) return 0;
-        return Integer.parseInt(response.headers().get("Total-count"));
+        totalcount = 32048;
     }
 
     public ArrayList<Card> GetCards(int page, int pageSize) throws IOException {

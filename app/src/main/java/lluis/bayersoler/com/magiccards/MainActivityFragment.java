@@ -133,6 +133,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     void onStopDownloadData() {
         Log.d("XXXX", "onStopDownloadData");
         dialog.dismiss();
+        if(snack != null){
+            snack.dismiss();
+        }
     }
 
     @Events.Subscribe("progress-downloading-data")
@@ -148,7 +151,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             if(!snack.isShown()){
                 snack.show();
             }
-
         }
     }
 
